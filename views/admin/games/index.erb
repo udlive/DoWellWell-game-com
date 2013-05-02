@@ -1,0 +1,42 @@
+<h1>MapAttack Game Editor</h1>
+
+<style>
+  table td {
+    padding-left: 10px;
+    padding-bottom: 5px;
+  }
+</style>
+
+<% if @games.empty? %>
+  No games yet!<br>
+<% else %>
+  <table>
+    <tr>
+      <th>Game Title</th>
+      <th>Date</th>
+      <th>Last pt.</th>
+      <th>Status</th>
+      <th>Players</th>
+      <th>Points</th>
+      <th colspan="5">&nbsp;</th>
+    </tr>
+    <% @games.each do |game| %>
+      <tr>
+        <td><a href="/game/<%= game.layer_id %>"><%= h game.name %></a></td>
+        <td><%= h game.created_at.strftime('%D') %></td>
+        <td><%= h game.players(:order => :updated_at).first.updated_at.strftime('%D') if game.players.length > 0 %></td>
+        <td><%= h game.is_active? ? 'On' : 'Off' %></td>
+        <td><%= h game.players.count %></td>
+        <td><%= h game.total_points %></td>
+        <td><a href="/admin/games/<%= game.id %>/edit">Setup</a></td>
+        <td><a href="/admin/games/<%= game.id %>/mapeditor">Edit Game</a></td>
+        <td>&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>/end_game" onclick="<%= onclick_put 'This will END THE GAME. Are you sure?' %>">End Game</a></td>
+        <td>&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>/reset" onclick="<%= onclick_put 'This will RESET ALL THE POINTS for this game. Are you -really- sure?' %>">Reset Points</a></td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="/admin/games/<%= game.id %>" onclick="<%= onclick_delete %>">Delete</a></td>
+      </tr>
+    <% end %>
+  </table>
+<% end %>
+<br><br>
+
+<a href="/admin/games/new" class="btn">Create New Game</a>
